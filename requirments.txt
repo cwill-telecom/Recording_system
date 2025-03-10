@@ -1,0 +1,8 @@
+flask
+requests
+numpy
+pyautogui
+keyboard
+pyaudio
+opencv-python
+wxPython
