@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Files</title>
+</head>
+<body>
+    <h1>Uploaded Files</h1>
+    <table border="1">
+        <tr>
+            <th>Filename</th>
+            <th>Upload Date</th>
+            <th>Client IP</th>
+            <th>Action</th>
+        </tr>
+        {% for file, date, ip in files %}
+        <tr>
+            <td>{{ file }}</td>
+            <td>{{ date }}</td>
+            <td>{{ ip }}</td>
+            <td><a href="/download/{{ file }}">Download</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
