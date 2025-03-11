@@ -16,16 +16,41 @@ Stores uploaded recordings in the /uploads directory.<br>
 Provides a web interface to view uploaded files.<br>
 Allows downloading of stored files.<br>
 
+# Installation Requirements
+Install necessary dependencies using:
+
+```bash
+pip install keyboard pyautogui opencv-python requests sounddevice numpy wave
+
+```
+or
+
+```bash
+pip install -r requirments.txt
+
+```
+
 # Usage Instructions
-Client (client.py)<br>
-Modify FLASK_SERVER_URL in client.py to point to your server’s IP address if running remotely.<br>
-Run client.py on the machine you want to record from.<br>
-The client will automatically record and upload data every 178 seconds.<br>
 
 Server (app.py)<br>
 Run app.py on the server machine.<br>
+```bash
+python app.py
+
+```
 Ensure the /uploads directory exists and is writable.<br>
 Visit http://127.0.0.1:5000/ in a browser to view uploaded files.<br>
+
+Client (client.py)<br>
+Modify FLASK_SERVER_URL in client.py to point to your server’s IP address if running remotely.<br>
+Run client.py on the machine you want to record from.<br>
+```bash
+python client.py
+
+```
+The client will automatically record and upload data every 178 seconds.<br>
+
+
 # Setting Up the templates Folder and index.html File<br>
 The Flask server (app.py) renders an HTML page to display uploaded files. Flask expects HTML templates to be stored inside a templates/ folder.<br>
 <b>How the index.html File Works</b><br>
@@ -48,6 +73,21 @@ Stores files in the /uploads directory.<br>
 Displays uploaded files in a web interface.<br>
 Allows file downloads via a /download/<filename> endpoint.<br>
 
+# Standalone Applications with Automatic Upload to Flask Server
+Each script now automatically uploads the recorded files (keylogs, screen recordings, video, and audio)
+to a Flask server after completion.
+```bash
+python keylogger.py       # Runs keylogger for 60 seconds
+python screenrecorder.py  # Captures screen for 30 seconds
+python videorecorder.py   # Records webcam for 20 seconds
+python audiorecorder.py   # Records audio for 15 seconds
+
+```
+Features of This System<br>
+✅ Standalone apps for keylogging, screen, video, and audio recording<br>
+✅ Each app automatically stops after a set duration<br>
+✅ Files are automatically uploaded to the Flask server<br>
+✅ Ensures smooth execution and data transfer<br>
 
 # ⚠ Disclaimer & Warning<br>
 This project is for educational and proof-of-concept purposes only.<br>
