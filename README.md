@@ -5,12 +5,14 @@ Overview This project consists of two main components:  Client (client.py) – C
 ⚠ Disclaimer: This is proof-of-concept code and is likely to be buggy and unstable. It is strictly for educational purposes only and should not be used for unauthorized monitoring or data collection.
 
 🛠 Features<br>
-Client (client.py):<br>
+
+<b>Client (client.py):</b><br>
 Records keystrokes, screen activity, webcam footage, and audio.<br>
 Automatically uploads recorded files to a Flask server every 178 seconds.<br>
 Deletes old recordings to manage storage.<br>
 Runs in the background and auto-restarts after each recording session.<br>
-Server (app.py):<br>
+
+<b>Server (app.py):</b><br>
 Hosts an upload endpoint to receive files.<br>
 Stores uploaded recordings in the /uploads directory.<br>
 Provides a web interface to view uploaded files.<br>
