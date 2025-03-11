@@ -6,3 +6,4 @@ keyboard
 pyaudio
 opencv-python
 wxPython
+wave
