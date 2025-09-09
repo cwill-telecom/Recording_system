@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Surveillance Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c5aa0;
+            text-align: center;
+        }
+        .stats {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .file-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .file-table th, .file-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .file-table th {
+            background-color: #2c5aa0;
+            color: white;
+        }
+        .file-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .file-type {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .type-avi { background: #ffe6e6; color: #d32f2f; }
+        .type-wav { background: #e3f2fd; color: #1976d2; }
+        .type-txt { background: #f3e5f5; color: #7b1fa2; }
+        .type-png { background: #e8f5e8; color: #388e3c; }
+        .btn {
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 14px;
+            margin: 2px;
+            display: inline-block;
+        }
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+        .last-updated {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .search-box {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 Surveillance Server</h1>
+        
+        <div style="text-align: center;">
+            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+            <input type="text" id="searchInput" class="search-box" placeholder="Search files..." onkeyup="searchFiles()">
+        </div>
+
+        <div class="stats">
+            <h3>📊 Server Statistics</h3>
+            <p>Total Files: <strong>{{ files|length }}</strong> | 
+               Last Updated: <strong id="current-time">{{ current_time }}</strong></p>
+        </div>
+
+        {% if files %}
+        <table class="file-table" id="fileTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Upload Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>
+                        <span class="file-type 
+                            {% if file.type == 'AVI' %}type-avi
+                            {% elif file.type == 'WAV' %}type-wav
+                            {% elif file.type == 'TXT' %}type-txt
+                            {% elif file.type == 'PNG' %}type-png
+                            {% endif %}">
+                            {{ file.type }}
+                        </span>
+                    </td>
+                    <td>{{ file.size }}</td>
+                    <td>{{ file.upload_time }}</td>
+                    <td>
+                        <a href="/download/{{ file.name }}" class="btn btn-download">⬇️ Download</a>
+                        <a href="/delete/{{ file.name }}" class="btn btn-delete" 
+                           onclick="return confirm('Delete {{ file.name }}?')">🗑️ Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <h2>📭 No files uploaded yet</h2>
+            <p>Waiting for surveillance client to connect...</p>
+            <p>Make sure the client is running and configured correctly.</p>
+        </div>
+        {% endif %}
+
+        <div class="last-updated">
+            <p>Server running on http://127.0.0.1:5000</p>
+            <p>Upload endpoint: <code>/upload</code> | 
+               <a href="/view">Simple View</a> | 
+               <a href="/">Refresh</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            document.getElementById('current-time').textContent = 
+                new Date().toLocaleString();
+        }
+        
+        function searchFiles() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('fileTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].textContent.toLowerCase().includes(filter)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
